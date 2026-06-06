@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C&C Café & Cinema</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "var(--primary-color)",
+              primaryLight: "var(--primary-light)",
+              bgOffWhite: "#FAF7F2",
+              textDark: "#2C1E16",
+              textMuted: "#5C4E46",
+            },
+            fontFamily: {
+              sans: ["Lato", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      :root {
+        --primary-color: #6d4c41;
+        --primary-light: #8d6e63;
+      }
+
+      body {
+        background-color: #faf7f2;
+        color: #2c1e16;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+      .fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Color selection removed */
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+
+    <script
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      /* STREAMING_CHUNK:Rendering Helper Components... */
+      // Reusable Map Component
+      const GoogleMap = ({ height = "h-64", title = "Cafe Location" }) => (
+        <div
+          className={`w-full ${height} bg-gray-200 rounded-xl overflow-hidden shadow-inner`}
+        >
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126920.2403977322!2d106.74052554743202!3d-6.229746499999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x100c5ea176a6b80!2sJakarta%2C%20Daerah%20Khusus%20Ibukota%20Jakarta!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            title={title}
+          ></iframe>
+        </div>
+      );
+
+      /* STREAMING_CHUNK:Defining Home Page with Hero and VIP Specs... */
+      // --- Halaman Beranda ---
+      const Home = ({ setPage }) => {
+        const specs = [
+          {
+            icon: "fa-couch",
+            title: "Sofa Recliner",
+            desc: "Kenyamanan maksimal",
+          },
+          {
+            icon: "fa-tv",
+            title: "TV Ultra HD",
+            desc: "Visual jernih & tajam",
+          },
+          { icon: "fa-snowflake", title: "AC Dingin", desc: "Suasana sejuk" },
+          {
+            icon: "fa-film",
+            title: "Katalog Luas",
+            desc: "Ratusan pilihan film",
+          },
+          { icon: "fa-table", title: "Meja Luas", desc: "Untuk hidangan Anda" },
+        ];
+
+        return (
+          <div className="fade-in">
+            {/* Hero Section */}
+            <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-black/50 z-10"></div>
+              <img
+                src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2000"
+                className="absolute inset-0 w-full h-full object-cover z-0"
+                alt="Hero Image"
+              />
+              <div className="relative z-20 text-center px-4 max-w-4xl mx-auto text-white">
+                <h1 className="text-5xl md:text-8xl font-serif mb-6 leading-tight">
+                  C&C Café
+                  <br />& Cinema.
+                </h1>
+                <p className="text-lg md:text-2xl font-sans mb-10 text-gray-200 tracking-wide">
+                  Elegansi dalam setiap sesapan, privasi dalam setiap tontonan.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                  <button
+                    onClick={() => setPage("contact")}
+                    className="bg-primary hover:bg-primaryLight text-white px-10 py-4 rounded-full transition-all transform hover:scale-105 font-sans tracking-widest uppercase text-sm font-bold"
+                  >
+                    Reservasi VIP
+                  </button>
+                  <button
+                    onClick={() => setPage("menu")}
+                    className="bg-transparent border border-white hover:bg-white hover:text-textDark text-white px-10 py-4 rounded-full transition-all font-sans tracking-widest uppercase text-sm font-bold"
+                  >
+                    Lihat Menu
+                  </button>
+                </div>
+              </div>
+            </section>
+            {/* Section Fasilitas VIP (Room Specs) */}
+            <section className="py-24 bg-white">
+              <div className="max-w-7xl mx-auto px-6">
+                {/* Keterangan Deskriptif */}
+                <div className="grid md:grid-cols-2 gap-16 items-center mb-16">
+                  <div className="order-2 md:order-1">
+                    <h2 className="text-sm font-sans tracking-[0.3em] text-primary uppercase mb-4">
+                      Pengalaman Eksklusif
+                    </h2>
+                    <h3 className="text-4xl font-serif mb-6 text-textDark">
+                      Private Cinema Room
+                    </h3>
+                    <p className="text-textMuted mb-6 leading-relaxed">
+                      Rasakan pengalaman menonton film yang tak terlupakan di
+                      ruangan VIP kami yang kedap suara. Dilengkapi dengan layar
+                      proyektor 4K, sound system kelas bioskop, dan sofa
+                      recliner premium. Cocok untuk acara pribadi, kencan, atau
+                      sekadar me-time.
+                    </p>
+                    <ul className="space-y-4 mb-8 text-textMuted">
+                      <li className="flex items-center">
+                        <i className="fa-solid fa-check text-primary mr-4 text-lg"></i>{" "}
+                        Kapasitas hingga 6 orang
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fa-solid fa-check text-primary mr-4 text-lg"></i>{" "}
+                        Bebas pilih film favorit (Netflix, Disney+, dll)
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fa-solid fa-check text-primary mr-4 text-lg"></i>{" "}
+                        Pelayanan makanan langsung ke ruangan
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="order-1 md:order-2 relative h-96 md:h-[450px] rounded-3xl overflow-hidden shadow-2xl">
+                    <img
+                      src="https://images.unsplash.com/photo-1595769816263-9b910be24d5f?auto=format&fit=crop&q=80&w=1000"
+                      alt="VIP Cinema Room"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
+                </div>
+
+                {/* Spesifikasi Ikon */}
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-6 pt-12 border-t border-bgOffWhite">
+                  {specs.map((spec, i) => (
+                    <div
+                      key={i}
+                      className="flex flex-col items-center text-center p-4 hover:bg-bgOffWhite rounded-2xl transition-colors duration-300"
+                    >
+                      <div className="w-14 h-14 bg-white shadow-sm rounded-full flex items-center justify-center mb-4 text-primary text-xl border border-gray-100">
+                        <i className={`fa-solid ${spec.icon}`}></i>
+                      </div>
+                      <h4 className="font-bold text-textDark mb-1">
+                        {spec.title}
+                      </h4>
+                      <p className="text-xs text-textMuted">{spec.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+            {/* Section Menu Preview */}
+            <section className="py-24 bg-bgOffWhite relative z-0">
+              <div className="max-w-7xl mx-auto px-6">
+                {/* Header Section (Tengah) */}
+                <div className="text-center mb-16">
+                  <h2 className="text-sm font-sans tracking-[0.3em] text-primary uppercase mb-3">
+                    Taste of C&C
+                  </h2>
+                  <h3 className="text-4xl md:text-5xl font-serif text-textDark">
+                    Menu Unggulan
+                  </h3>
+                </div>
+
+                {/* Grid Layout (Max 4 Items) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                  {[
+                    {
+                      name: "Signature Latte",
+                      desc: "Espresso premium dengan karamel bakar.",
+                      price: "45k",
+                      img: "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=400&auto=format&fit=crop",
+                    },
+                    {
+                      name: "Truffle Fries",
+                      desc: "Kentang truffle dengan parmesan.",
+                      price: "42k",
+                      img: "https://images.unsplash.com/photo-1572448862527-d3c904757de6?q=80&w=400&auto=format&fit=crop",
+                    },
+                    {
+                      name: "Matcha Sakura",
+                      desc: "Matcha Kyoto dengan sirup sakura.",
+                      price: "48k",
+                      img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?q=80&w=400&auto=format&fit=crop",
+                    },
+                    {
+                      name: "Mix Platter",
+                      desc: "Sosis, calamari, dan chicken wings.",
+                      price: "75k",
+                      img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400&auto=format&fit=crop",
+                    },
+                  ].map((item, i) => (
+                    <div
+                      key={i}
+                      className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[400px] transition-all duration-500 hover:scale-110 hover:-translate-y-4 hover:shadow-2xl hover:z-10 relative cursor-pointer"
+                    >
+                      <div className="h-3/5 overflow-hidden">
+                        <img
+                          src={item.img}
+                          className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                          alt={item.name}
+                        />
+                      </div>
+                      <div className="p-6 flex-grow flex flex-col justify-between bg-white relative z-10">
+                        <div>
+                          <h4 className="text-xl font-serif font-bold mb-2 text-textDark">
+                            {item.name}
+                          </h4>
+                          <p className="text-sm text-textMuted line-clamp-2">
+                            {item.desc}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center border-t border-gray-100 pt-4 mt-4">
+                          <span className="text-primary font-bold text-lg">
+                            {item.price}
+                          </span>
+                          <div className="w-8 h-8 rounded-full bg-bgOffWhite flex items-center justify-center text-primary">
+                            <i className="fa-solid fa-plus text-xs"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA Button (Tengah Bawah) */}
+                <div className="text-center">
+                  <button
+                    onClick={() => setPage("menu")}
+                    className="border border-primary text-primary hover:bg-primary hover:text-white px-12 py-4 rounded-full transition-all duration-300 font-sans tracking-widest uppercase text-sm font-bold inline-flex items-center gap-3 group"
+                  >
+                    Menu Lebih Lengkap
+                    <i className="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                  </button>
+                </div>
+              </div>
+            </section>
+            <section className="w-full">
+              <div className="grid grid-cols-2 md:grid-cols-4 w-full">
+                {[
+                  {
+                    img: "https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&q=80&w=800",
+                    name: "Dessert",
+                  },
+                  {
+                    img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=800",
+                    name: "Healthy Bowl",
+                  },
+                  {
+                    img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800",
+                    name: "Main Course",
+                  },
+                  {
+                    img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=800",
+                    name: "Appetizer",
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="h-64 md:h-80 overflow-hidden relative group cursor-pointer"
+                  >
+                    <img
+                      src={item.img}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      alt={item.name}
+                    />
+                    {/* Overlay Darken & Text */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-500 flex items-center justify-center">
+                      <span className="text-white font-serif text-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        {item.name}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div
+                className="relative h-[500px] w-full flex items-center justify-center overflow-hidden bg-fixed bg-center bg-cover"
+                style={{
+                  backgroundImage:
+                    "url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=2000')",
+                }}
+              >
+                {/* Hapus tag <img> di dalam sini karena background sudah dipindahkan ke div parent */}
+                <div className="absolute inset-0 bg-black/40"></div>
+                <div className="relative z-10 text-center text-white px-4">
+                  <h2 className="font-serif italic text-4xl mb-2 opacity-90">
+                    Amazingly
+                  </h2>
+                  <h1 className="text-6xl md:text-8xl font-bold tracking-tighter uppercase">
+                    DELICIOUS
+                  </h1>
+                </div>
+              </div>
+            </section>
+            {/* Jam Buka Section */}
+            <section className="py-24 bg-white">
+              <div className="max-w-6xl mx-auto px-6">
+                <div className="bg-primary rounded-[40px] overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                  {/* Kiri: Detail Jam Buka */}
+                  <div className="md:w-1/2 p-12 lg:p-16 text-white flex flex-col justify-center relative">
+                    <div className="relative z-10">
+                      <h2 className="text-sm font-sans tracking-[0.3em] uppercase mb-4 opacity-80">
+                        Kunjungi Kami
+                      </h2>
+                      <h3 className="text-4xl font-serif mb-10">
+                        Jam Operasional
+                      </h3>
+                      <div className="space-y-8">
+                        <div>
+                          <p className="font-sans uppercase tracking-widest text-xs opacity-70 mb-2 border-b border-white/20 pb-2 inline-block">
+                            Hari Kerja
+                          </p>
+                          <p className="text-2xl font-serif mt-2">
+                            Senin - Jumat
+                          </p>
+                          <p className="text-lg opacity-90">
+                            09.00 - 22.00 WIB
+                          </p>
+                        </div>
+                        <div>
+                          <p className="font-sans uppercase tracking-widest text-xs opacity-70 mb-2 border-b border-white/20 pb-2 inline-block">
+                            Akhir Pekan
+                          </p>
+                          <p className="text-2xl font-serif mt-2">
+                            Sabtu - Minggu
+                          </p>
+                          <p className="text-lg opacity-90">
+                            09.00 - 24.00 WIB
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Ornamen Lingkaran Latar Belakang */}
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -ml-32 -mb-32"></div>
+                  </div>
+
+                  {/* Kanan: Foto Kafe */}
+                  <div className="md:w-1/2 min-h-[300px] md:min-h-full">
+                    <img
+                      src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1000"
+                      alt="Suasana Cafe"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+            {/* Customer Review Section */}
+            <section
+              className="relative py-24 bg-fixed bg-center bg-cover"
+              style={{
+                backgroundImage:
+                  "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2000')",
+              }}
+            >
+              <div className="absolute inset-0 bg-black/80"></div>
+              <div className="relative z-10 max-w-7xl mx-auto px-6">
+                <div className="text-center mb-16">
+                  <h2 className="text-sm font-sans tracking-[0.3em] text-primaryLight uppercase mb-3">
+                    Pengalaman Nyata
+                  </h2>
+                  <h3 className="text-4xl md:text-5xl font-serif text-white capitalize">
+                    Suara Customer Kami
+                  </h3>
+                </div>
+
+                <div className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-8 hide-scrollbar">
+                  {[
+                    {
+                      name: "Andi Wijaya",
+                      role: "Sutradara Indie",
+                      review:
+                        "Private cinema room-nya luar biasa! Kualitas suara dan layarnya benar-benar seperti bioskop premium. Makanan juga diantar tanpa mengganggu jalannya film.",
+                      rating: 5,
+                    },
+                    {
+                      name: "Sarah & Budi",
+                      role: "Pasangan",
+                      review:
+                        "Tempat kencan terbaik! Privasi terjamin, sofa reclinernya sangat nyaman. Signature Latte-nya wajib dicoba. Pasti akan kembali lagi kesini.",
+                      rating: 5,
+                    },
+                    {
+                      name: "Dina Mariana",
+                      role: "Food Blogger",
+                      review:
+                        "Ambience cafenya sangat estetik. Truffle Fries dan Mix Platternya juara. Selain buat nonton, asik juga buat nongkrong sambil foto-foto.",
+                      rating: 4,
+                    },
+                    {
+                      name: "Kevin Sanjaya",
+                      role: "Mahasiswa",
+                      review:
+                        "Sering kesini bareng temen-temen buat nobar. Patungan jadi murah, fasilitas bintang 5. Bebas pilih film dari Netflix kesukaan kita.",
+                      rating: 5,
+                    },
+                  ].map((review, i) => (
+                    <div
+                      key={i}
+                      className="min-w-[85vw] md:min-w-[400px] snap-center bg-white/10 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 text-white flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300"
+                    >
+                      <div>
+                        <div className="flex text-yellow-400 mb-6 text-sm">
+                          {[...Array(review.rating)].map((_, j) => (
+                            <i key={j} className="fa-solid fa-star"></i>
+                          ))}
+                        </div>
+                        <p className="font-serif text-lg md:text-xl italic mb-6 leading-relaxed opacity-90">
+                          "{review.review}"
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center font-bold text-xl shadow-lg">
+                          {review.name.charAt(0)}
+                        </div>
+                        <div>
+                          <h4 className="font-bold font-sans tracking-wide">
+                            {review.name}
+                          </h4>
+                          <p className="text-xs opacity-70 uppercase tracking-wider">
+                            {review.role}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </div>
+        );
+      };
+
+      /* STREAMING_CHUNK:Configuring Menu Page Component... */
+      // --- Halaman Menu Lengkap ---
+      const MenuPage = () => {
+        const menuCategories = [
+          {
+            title: "Kopi Klasik",
+            items: [
+              {
+                name: "Espresso Noir",
+                desc: "Ekstraksi kopi murni yang intens.",
+                price: "28k",
+              },
+              {
+                name: "Cappuccino Velvet",
+                desc: "Espresso dengan foam susu lembut.",
+                price: "38k",
+              },
+              {
+                name: "Americano Cold",
+                desc: "Kopi hitam segar dengan es.",
+                price: "32k",
+              },
+            ],
+          },
+          {
+            title: "Cemilan VIP Cinema",
+            items: [
+              {
+                name: "Popcorn Butter Gold",
+                desc: "Popcorn mentega kualitas premium.",
+                price: "35k",
+              },
+              {
+                name: "Chicken Wings Glaze",
+                desc: "Sayap ayam madu wijen.",
+                price: "55k",
+              },
+              {
+                name: "Nachos Supreme",
+                desc: "Keripik jagung dengan saus keju & salsa.",
+                price: "48k",
+              },
+            ],
+          },
+        ];
+
+        return (
+          <div className="pt-32 pb-24 px-6 max-w-5xl mx-auto fade-in min-h-screen">
+            <div className="text-center mb-16">
+              <h1 className="text-6xl font-serif text-textDark mb-6">
+                Buku Menu
+              </h1>
+              <div className="w-24 h-1 bg-primary mx-auto opacity-30"></div>
+              <p className="mt-6 text-textMuted max-w-2xl mx-auto text-lg">
+                Eksplorasi cita rasa premium yang diracik khusus untuk
+                menyempurnakan pengalaman sinematik Anda.
+              </p>
+            </div>
+            {menuCategories.map((cat, idx) => (
+              <div
+                key={idx}
+                className="mb-20 bg-white p-8 md:p-12 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <div className="flex items-center gap-4 mb-10 border-b border-primary/10 pb-6">
+                  <div className="w-12 h-12 rounded-full bg-bgOffWhite flex items-center justify-center text-primary text-xl">
+                    <i
+                      className={`fa-solid ${idx === 0 ? "fa-mug-hot" : "fa-utensils"}`}
+                    ></i>
+                  </div>
+                  <h2 className="text-2xl font-sans tracking-[0.2em] text-primary uppercase font-bold">
+                    {cat.title}
+                  </h2>
+                </div>
+                <div className="grid md:grid-cols-2 gap-x-16 gap-y-10">
+                  {cat.items.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex justify-between items-start group"
+                    >
+                      <div className="pr-4">
+                        <h4 className="text-xl font-serif font-bold text-textDark group-hover:text-primary transition-colors">
+                          {item.name}
+                        </h4>
+                        <p className="text-sm text-textMuted mt-2 leading-relaxed">
+                          {item.desc}
+                        </p>
+                      </div>
+                      <span className="font-bold text-primary text-lg bg-bgOffWhite px-4 py-2 rounded-xl border border-gray-100 group-hover:bg-primary group-hover:text-white transition-colors">
+                        {item.price}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      };
+
+      /* STREAMING_CHUNK:Setting up Contact Page Form... */
+      // --- Halaman Kontak ---
+      const ContactPage = () => (
+        <div className="fade-in min-h-screen flex flex-col">
+          <div className="pt-32 pb-16 px-6 max-w-6xl mx-auto w-full">
+            <div className="text-center mb-16">
+              <h1 className="text-5xl font-serif text-textDark mb-4">
+                Reservasi
+              </h1>
+              <p className="text-textMuted tracking-wide">
+                Pesan meja atau ruang VIP untuk momen spesial Anda.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12 mb-16">
+              <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100">
+                <h3 className="text-2xl font-serif mb-8">Formulir Pesanan</h3>
+                <form
+                  className="space-y-6"
+                  onSubmit={(e) => e.preventDefault()}
+                >
+                  <input
+                    type="text"
+                    className="w-full bg-bgOffWhite border-none rounded-xl px-5 py-4 focus:ring-2 focus:ring-primary/20 outline-none"
+                    placeholder="Nama Lengkap"
+                  />
+                  <select className="w-full bg-bgOffWhite border-none rounded-xl px-5 py-4 outline-none">
+                    <option>Pilih Tipe Ruangan</option>
+                    <option>VIP Movie Room</option>
+                    <option>Reguler Cafe Table</option>
+                  </select>
+                  <input
+                    type="date"
+                    className="w-full bg-bgOffWhite border-none rounded-xl px-5 py-4 outline-none"
+                  />
+                  <button className="w-full bg-primary text-white py-4 rounded-xl font-bold tracking-widest uppercase hover:bg-primaryLight transition-all">
+                    Kirim Permintaan
+                  </button>
+                </form>
+              </div>
+
+              <div className="flex flex-col items-center justify-center bg-white p-10 rounded-3xl border border-gray-100 text-center">
+                <h3 className="text-xl font-serif mb-6 text-textDark">
+                  Reservasi via WhatsApp
+                </h3>
+                <div className="bg-bgOffWhite p-6 rounded-2xl mb-6">
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wa.me/6281234567890&color=2C1E16"
+                    className="w-40 h-40"
+                    alt="WA QR"
+                  />
+                </div>
+                <p className="text-2xl font-bold text-primary">
+                  +62 812-3456-7890
+                </p>
+                <p className="text-sm text-textMuted mt-2">
+                  Scan untuk chat langsung dengan admin
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <section
+            className="relative py-24 bg-fixed bg-center bg-cover mt-auto w-full"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1525610553991-2bede1a236e2?auto=format&fit=crop&q=80&w=2000')",
+            }}
+          >
+            <div className="absolute inset-0 bg-black/85"></div>
+            <div className="relative z-10 max-w-6xl mx-auto px-6">
+              <div className="mb-12 text-center">
+                <h2 className="text-sm font-sans tracking-[0.3em] text-primaryLight uppercase mb-3">
+                  Lokasi Kami
+                </h2>
+                <h3 className="text-4xl md:text-5xl font-serif text-white mb-4">
+                  Kunjungi C&C
+                </h3>
+                <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed">
+                  Kami berlokasi strategis di pusat kota. Gunakan panduan peta
+                  di bawah ini untuk menemukan rute terbaik menuju pengalaman
+                  sinematik tak terlupakan.
+                </p>
+              </div>
+              <div className="rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white/10 bg-white/5 backdrop-blur-sm">
+                <GoogleMap height="h-[500px]" title="Peta Lokasi Lengkap" />
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+
+      // --- Main App Component ---
+      const App = () => {
+        const [currentPage, setCurrentPage] = useState("home");
+        const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+        const handlePageChange = (id) => {
+          setCurrentPage(id);
+          setIsMobileMenuOpen(false);
+          window.scrollTo(0, 0);
+        };
+
+        return (
+          <div className="flex flex-col min-h-screen">
+            {/* Navbar */}
+            <nav className="fixed w-full z-50 bg-bgOffWhite/90 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all duration-300">
+              <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <div
+                  className="text-2xl font-serif font-bold text-primary cursor-pointer tracking-tighter hover:text-primaryLight transition-colors"
+                  onClick={() => handlePageChange("home")}
+                >
+                  C&C.
+                </div>
+
+                {/* Desktop Menu */}
+                <div className="hidden md:flex items-center space-x-10">
+                  {["home", "menu", "contact"].map((id) => (
+                    <button
+                      key={id}
+                      onClick={() => handlePageChange(id)}
+                      className={`text-xs uppercase tracking-[0.2em] font-bold transition-all relative after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full ${currentPage === id ? "text-primary after:w-full" : "text-textMuted hover:text-primary"}`}
+                    >
+                      {id === "home"
+                        ? "Beranda"
+                        : id === "menu"
+                          ? "Menu"
+                          : "Kontak"}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Mobile Menu Toggle */}
+                <div className="md:hidden flex items-center">
+                  <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="text-primary text-2xl focus:outline-none"
+                  >
+                    <i
+                      className={`fa-solid ${isMobileMenuOpen ? "fa-xmark" : "fa-bars"}`}
+                    ></i>
+                  </button>
+                </div>
+              </div>
+
+              {/* Mobile Menu */}
+              {isMobileMenuOpen && (
+                <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-xl py-6 flex flex-col items-center space-y-6 fade-in">
+                  {["home", "menu", "contact"].map((id) => (
+                    <button
+                      key={id}
+                      onClick={() => handlePageChange(id)}
+                      className={`text-sm uppercase tracking-[0.2em] font-bold transition-all ${currentPage === id ? "text-primary" : "text-textMuted"}`}
+                    >
+                      {id === "home"
+                        ? "Beranda"
+                        : id === "menu"
+                          ? "Menu"
+                          : "Kontak"}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </nav>
+
+            <main className="flex-grow">
+              {currentPage === "home" && <Home setPage={setCurrentPage} />}
+              {currentPage === "menu" && <MenuPage />}
+              {currentPage === "contact" && <ContactPage />}
+            </main>
+
+            {/* Footer */}
+            <footer className="bg-textDark text-white pt-20 pb-10">
+              <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-16 mb-16">
+                <div>
+                  <h3 className="text-2xl font-serif mb-6 tracking-widest uppercase">
+                    C&C.
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Kafe eksklusif dengan pengalaman sinematik pribadi di
+                    jantung kota. Ruang ternyaman untuk kopi dan diskusi.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-6">
+                    Navigasi
+                  </h4>
+                  <ul className="space-y-3 text-gray-400 text-sm">
+                    <li
+                      className="cursor-pointer hover:text-white"
+                      onClick={() => setCurrentPage("home")}
+                    >
+                      Beranda
+                    </li>
+                    <li
+                      className="cursor-pointer hover:text-white"
+                      onClick={() => setCurrentPage("menu")}
+                    >
+                      Daftar Menu
+                    </li>
+                    <li
+                      className="cursor-pointer hover:text-white"
+                      onClick={() => setCurrentPage("contact")}
+                    >
+                      Reservasi
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-6">
+                    Mini Map
+                  </h4>
+                  <GoogleMap height="h-32" />
+                </div>
+              </div>
+              <div className="text-center border-t border-white/5 pt-10 text-gray-500 text-xs">
+                © 2024 C&C Café & Cinema. All Rights Reserved.
+              </div>
+            </footer>
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
